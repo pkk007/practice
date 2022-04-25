@@ -1,61 +1,77 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
-#define MAX 20
 
 struct stack{
-    char arr[MAX];
+    int size;
     int top;
-}s;
+    char arr[20];
+};
 
-void push(char item){
-    if (s.top == (MAX - 1))
-        printf ("STACK OVERFLOW\n");
+int isEmpty(struct stack * s){
+    if(s-> top == -1)
+        return 1;
+    else
+        return 0;
+}
+
+int isFull(struct stack * s){
+    if(s->top == s->size-1)
+        return 1;
+    else
+        return 0;
+}
+
+void push(struct stack * s, int data){
+    if(isFull(s))
+        printf("STACK OVERFLOW\n");
     else{
-        s.top++;
-        s.arr[s.top] = item;
+        s->top++;
+        s->arr[s->top] = data;
     }
 }
 
-void pop(){
-    if (s.top == - 1){
-        printf ("STACK UNDERFLOW\n");
-    }
+void pop(struct stack * s){
+    if(isEmpty(s))
+        printf("STACK UNDERFLOW\n");
     else{
-        s.top--;
+        s->top--;
     }
 }
 
 int main(){
-    char exp[MAX];
+    char exp[20];
     int i = 0;
-    s.top = -1;
+    struct stack * s = (struct stack *)malloc(sizeof(struct stack));
+    s->size = 10;
+    s->top = -1;
     printf("\nINPUT THE EXPRESSION : ");
     scanf("%s", exp);
-    for(i = 0;i < strlen(exp);i++){
+
+    for(i = 0; i<strlen(exp); i++){
         if(exp[i] == '(' || exp[i] == '[' || exp[i] == '{'){
-            push(exp[i]);
-            continue;
+            push(s,exp[i]);
         }
-        else if(exp[i] == ')' || exp[i] == ']' || exp[i] == '}'){
+        else if(s->top!=-1 && (exp[i] == ')' || exp[i] == ']' || exp[i] == '}')){
             if(exp[i] == ')'){
-                if(s.arr[s.top] == '(')
-                    pop();
+                if(s->arr[s->top] == '(')
+                    pop(s);
                 else{
                     printf("\nUNBALANCED EXPRESSION\n");
                     break;
                 }
             }
             if(exp[i] == ']'){
-                if(s.arr[s.top] == '[')
-                    pop();
+                if(s->arr[s->top] == '[')
+                    pop(s);
                 else{
                     printf("\nUNBALANCED EXPRESSION\n");
                     break;
                 }
             }
             if(exp[i] == '}'){
-                if(s.arr[s.top] == '{')
-                    pop();
+                if(s->arr[s->top] == '{')
+                    pop(s);
                 else{
                     printf("\nUNBALANCED EXPRESSION\n");
                     break;
@@ -63,8 +79,9 @@ int main(){
             }
         }
     }
-    if(s.top == -1)
+    if(isEmpty(s))
         printf("\nBALANCED EXPRESSION\n");
     else
         printf("\nNOT BALANCED EXPRESSION\n");
+
 }
